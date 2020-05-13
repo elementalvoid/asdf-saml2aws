@@ -17,13 +17,13 @@ cleanup() {
 trap cleanup INT TERM EXIT
 
 install() {
-  # Note that we're adding back the 'v' tag prefix.
-  local version=v$1
+  local version=$1
   local install_path="$2//bin/"
   local bin_path="${install_path}/saml2aws"
 
   local download_url
-  download_url="https://github.com/Versent/saml2aws/releases/download/${version}/saml2aws_${version}_${platform}_amd64.tar.gz"
+  # Note that we're adding back the 'v' tag prefix but _only_ in the directory path, not the downloaded file name.
+  download_url="https://github.com/Versent/saml2aws/releases/download/v${version}/saml2aws_${version}_${platform}_amd64.tar.gz"
 
   mkdir -p "${install_path}"
 
