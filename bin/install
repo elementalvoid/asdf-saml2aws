@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+[[ -z ${ASDF_INSTALL_TYPE} ]] && echo "ASDF_INSTALL_TYPE is required" && exit 1
+[[ -z ${ASDF_INSTALL_VERSION} ]] && echo "ASDF_INSTALL_VERSION is required" && exit 1
+[[ -z ${ASDF_INSTALL_PATH} ]] && echo "ASDF_INSTALL_PATH is required" && exit 1
+[[ ${ASDF_INSTALL_TYPE} != version ]] && echo "install type '${ASDF_INSTALL_TYPE}' is not supported." && exit 1
+[[ $(uname -m) != x86_64 ]] && echo "Sorry i386 (32bit arch) is not supported." && exit 1
+
+platform="$(uname)"
+
+tmp_dir=$(mktemp -d -t saml2aws_XXXX)
+cleanup() {
+  rm -rf ${tmp_dir}
+}
+trap cleanup INT TERM EXIT
+
+install() {
+  # Note that we're adding back the 'v' tag prefix.
+  local version=v$1
+  local install_path="$2//bin/"
+  local bin_path="${install_path}/saml2aws"
+
+  local download_url
+  download_url="https://github.com/Versent/saml2aws/releases/download/${version}/saml2aws_${version}_${platform}_amd64.tar.gz"
+
+  mkdir -p "${install_path}"
+
+  cd ${tmp_dir}
+  echo "Downloading saml2aws from ${download_url}"
+  curl -sL "$download_url" -o "${tmp_dir}/saml2aws_${platform}_${version}.tar.gz"
+  tar -xzf ${tmp_dir}/saml2aws_${platform}_${version}.tar.gz
+  mv ${tmp_dir}/saml2aws ${bin_path}
+  chmod +x "${bin_path}"
+}
+
+install ${ASDF_INSTALL_VERSION} ${ASDF_INSTALL_PATH}
