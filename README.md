@@ -1,6 +1,6 @@
 # asdf-saml2aws
 
-[![Build Status](https://travis-ci.org/elementalvoid/asdf-saml2aws.svg?branch=master)](https://travis-ci.org/elementalvoid/asdf-saml2aws)
+[![GitHub Actions Status](https://github.com/elementalvoid/asdf-saml2aws/workflows/Main%20workflow/badge.svg?branch=master)](https://github.com/elementalvoid/asdf-saml2aws/actions)
 
 [saml2aws](https://github.com/Versent/saml2aws) plugin for [asdf](https://github.com/asdf-vm/asdf) version manager
 
