@@ -7,12 +7,18 @@ set -euo pipefail
 [[ -z ${ASDF_INSTALL_PATH} ]] && echo "ASDF_INSTALL_PATH is required" && exit 1
 [[ ${ASDF_INSTALL_TYPE} != version ]] && echo "install type '${ASDF_INSTALL_TYPE}' is not supported." && exit 1
 
+platform="$(uname)"
+
 case "$(uname -m)" in
   x86_64)
     os_arch='amd64'
     ;;
-  aarch64|arm64)
-    os_arch='arm64'
+  aarch64|arm64|armv6)
+    if [[ ${platform} == "windows" ]]; then
+      os_arch='armv6'
+    else
+      os_arch='arm64'
+    fi
     ;;
   *)
     echo "Sorry arch $(uname -m) is not supported."
@@ -20,7 +26,7 @@ case "$(uname -m)" in
     ;;
 esac
 
-platform="$(uname)"
+
 
 tmp_dir=$(mktemp -d -t saml2aws_XXXX)
 cleanup() {
@@ -30,7 +36,7 @@ trap cleanup INT TERM EXIT
 
 install() {
   local version=$1
-  local install_path="$2//bin/"
+  local install_path="$2/bin/"
   local bin_path="${install_path}/saml2aws"
 
   local download_url
