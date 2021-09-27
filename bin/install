@@ -6,7 +6,19 @@ set -euo pipefail
 [[ -z ${ASDF_INSTALL_VERSION} ]] && echo "ASDF_INSTALL_VERSION is required" && exit 1
 [[ -z ${ASDF_INSTALL_PATH} ]] && echo "ASDF_INSTALL_PATH is required" && exit 1
 [[ ${ASDF_INSTALL_TYPE} != version ]] && echo "install type '${ASDF_INSTALL_TYPE}' is not supported." && exit 1
-[[ $(uname -m) != x86_64 ]] && echo "Sorry i386 (32bit arch) is not supported." && exit 1
+
+case "$(uname -m)" in
+  x86_64)
+    os_arch='amd64'
+    ;;
+  aarch64|arm64)
+    os_arch='arm64'
+    ;;
+  *)
+    echo "Sorry arch $(uname -m) is not supported."
+    exit 1
+    ;;
+esac
 
 platform="$(uname)"
 
@@ -23,7 +35,7 @@ install() {
 
   local download_url
   # Note that we're adding back the 'v' tag prefix but _only_ in the directory path, not the downloaded file name.
-  download_url="https://github.com/Versent/saml2aws/releases/download/v${version}/saml2aws_${version}_${platform}_amd64.tar.gz"
+  download_url="https://github.com/Versent/saml2aws/releases/download/v${version}/saml2aws_${version}_${platform}_${os_arch}.tar.gz"
 
   mkdir -p "${install_path}"
 
